@@ -5,7 +5,7 @@ const pets = require('./petData.js')
 // Get All Pets
 // in '/pets'
 app.get('/pets', (req, res) => {
-    const petListHTML = pets.map((pet) => `
+    const allPetsList = pets.map((pet) => `
     <div>
         <h2>${pet.name}</h2>
     </div>
@@ -19,7 +19,7 @@ const html = `
     </head>
     <body>
         <h1>Pet List</h1>
-        ${petListHTML}
+        ${allPetsList}
     </body>
     </html>
 `;
@@ -38,6 +38,24 @@ app.get('/pets/:name', (req, res) => {
         </div>
     `
 })
+
+app.get('/pets/owner', (req, res) => {
+    const ownerName = req.query.owner;
+    const pet = pets.find((pet) => pet.owner === ownerName);
+
+    if (pet) {
+        const petHTML = `
+            <div>
+                <h2>Name: ${pet.name}</h2>
+                <h3>Pet's age: ${pet.age}</h3>
+                <h3>Owner: ${pet.owner}</h3>
+            </div>
+        `;
+        res.send(petHTML);
+    } else {
+        res.status(404).send("Pet not found");
+    }
+});
 
 const PORT = 8080;
 app.listen(PORT, () => {
